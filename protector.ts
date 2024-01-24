@@ -72,16 +72,18 @@ export async function sendMsgandReboot(serverHost:string,serverPort:number,rconP
 
 
 
-export function startProcess(): void {
+export function startProcess(cmd:string): void {
     exec(cmd, (err:Error | null, stdout: string, stderr: string) => {
         if (err) {
             console.error(`[${moment().format('HH:mm:ss')}] Error starting process: ${err}`);
-            return;
+            return `[${moment().format('HH:mm:ss')}] Error starting process: ${err}`;
         }
         if (stderr) {
             console.error(`[${moment().format('HH:mm:ss')}] Standard error output: ${stderr}`);
+            return `[${moment().format('HH:mm:ss')}] Standard error output: ${stderr}`;
         }
         console.log(`[${moment().format('HH:mm:ss')}] Process started: ${stdout}`);
+        return `[${moment().format('HH:mm:ss')}] Process started: ${stdout}`;
     });
 }
 
@@ -93,11 +95,7 @@ export async function checkMemoryUsage(): Promise<number> {
         // console.log(`已用内存: ${mem.used}`);
         // console.log(`空闲内存: ${mem.free}`);
         console.log(`[${moment().format('HH:mm:ss')}] 当前内存占用百分比: ${memPercentage}%`);
-        
-        if (memPercentage > memTarget) {
-            console.log(`负载过高，即将重启。`);
-            await sendMsgandReboot();
-        }
+    
 
         return memPercentage;
     } catch (error) {
@@ -143,14 +141,4 @@ export async function backupDirectory(sourceDir: string, backupDir: string): Pro
         console.error(`[${moment().format('HH:mm:ss')}] Error during backup: `, error);
     }
 }
- backupDirectory(gamedataPath, backupPath);
 
-// 每隔20秒钟检查一次
-setInterval(check, checkSecond*1000);
-
-
-// 备份游戏目录
-
-setInterval(() => {
-    backupDirectory(gamedataPath, backupPath);
-}, backupInterval*1000);

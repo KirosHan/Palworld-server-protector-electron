@@ -1,9 +1,10 @@
 // main.ts
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain,globalShortcut  } from 'electron';
 import {
   startProcess,
   checkMemoryUsage,
   backupDirectory,
+  sendMsgandReboot
   // ...其他需要的函数
 } from './protector';
 import path from 'path';
@@ -46,12 +47,14 @@ let rconPassword: string = 'admin';
 
 
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     // ...窗口配置
     webPreferences: {
+      devTools: true, // 确保开启开发者工具
+
       nodeIntegration: true,
       contextIsolation: false,
-      preload: path.join(__dirname, 'preload.js') // 如果使用 preload 脚本
+      //preload: path.join(__dirname, 'preload.js') // 如果使用 preload 脚本
     }
   });
 
@@ -59,11 +62,21 @@ function createWindow() {
   // ...其他窗口创建相关的代码
 }
 
-app.whenReady().then(createWindow);
+
+app.whenReady().then(() => {
+  createWindow()
+  // 注册一个 'Ctrl+I' 的全局快捷键
+
+});
+
+
 
 function sendToConsole(str: string) {
     if (mainWindow) {
         mainWindow.webContents.send('action-response', str);
+    }
+    else{
+      console.log('mainWindow is null');
     }
 }
 
@@ -81,6 +94,8 @@ ipcMain.on('perform-action', (event, arg) => {
     serverHost = arg.serverHost;
     serverPort = parseInt(arg.serverPort);
     rconPassword = arg.rconPassword;
+
+    sendToConsole(`[${moment().format('HH:mm:ss')}] 开始运行...`)
     
     // 设置内存检查的定时任务
     if (checkIntervaljob) {
@@ -88,10 +103,16 @@ ipcMain.on('perform-action', (event, arg) => {
     }
     checkIntervaljob = setInterval(() => {
       checkMemoryUsage().then(memUsage => {
+        sendToConsole(`[${moment().format('HH:mm:ss')}] 当前内存占用百分比: ${memUsage}%`)
         // 可以将内存使用情况发送回渲染器进程
-        event.reply('action-response', `Memory Usage: ${memUsage}%`);
+        if (memUsage > memTarget) {
+          console.log(`负载过高，即将重启。`);
+          sendToConsole(`[${moment().format('HH:mm:ss')}] 负载过高，即将重启。`)
+          sendMsgandReboot(serverHost,serverPort,rconPassword);
+        }
+        //event.reply('action-response', `Memory Usage: ${memUsage}%`);
       });
-      checkMemoryUsage();
+
         exec(`tasklist`, (err: Error | null, stdout: string, stderr: string) => {
             if (err) {
                 console.error(`[${moment().format('HH:mm:ss')}] Error executing tasklist: ${err}`);
@@ -100,9 +121,11 @@ ipcMain.on('perform-action', (event, arg) => {
 
             if (stdout.toLowerCase().indexOf(processName.toLowerCase()) === -1) {
                 console.log(`[${moment().format('HH:mm:ss')}] ${processName} is not running. Attempting to start.`);
-                startProcess();
+                sendToConsole(`[${moment().format('HH:mm:ss')}] ${processName} 没有运行. 尝试启动.`)
+                startProcess(cmd);
             } else {
                 console.log(`[${moment().format('HH:mm:ss')}] ${processName} is already running.`);
+                sendToConsole(`[${moment().format('HH:mm:ss')}] ${processName} 正在运行。`)
             }
         });
     }, parseInt(arg.checkSecond) * 1000);
@@ -115,8 +138,11 @@ ipcMain.on('perform-action', (event, arg) => {
       backupDirectory(gamedataPath, backupPath);
       // 完成备份后的操作
     }, parseInt(arg.backupInterval) * 1000);
+    backupDirectory(gamedataPath, backupPath); //启动时先备份一次
 
     isRunning = true;
+
+
   }
   else{
     if (checkIntervaljob) {
@@ -126,15 +152,13 @@ ipcMain.on('perform-action', (event, arg) => {
     if (backupIntervaljob) {
         clearInterval(backupIntervaljob);
       }
-    isRunning = false;
+      sendToConsole(`[${moment().format('HH:mm:ss')}] 已停止...`)
+      isRunning = false;
+
   }
   // ...处理其他操作
 });
 
 // ...其他必要的代码
-
-
-// 每隔20秒钟检查一次
-setInterval(check, checkSecond*1000);
 
 

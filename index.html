@@ -94,50 +94,50 @@
             <h1>Palworld Server Manager</h1>
             <div class="form-group">
                 <label for="gamedataPath">Game Data Path:</label>
-                <input type="text" id="gamedataPath" placeholder="Enter Game Data Path">
+                <input type="text" id="gamedataPath" value="C:\\Users\\kiros\\Desktop\\steamcmd\\steamapps\\common\\PalServer\\Pal\\Saved\\SaveGames" placeholder="C:\\Users\\kiros\\Desktop\\steamcmd\\steamapps\\common\\PalServer\\Pal\\Saved\\SaveGames">
             </div>
             <div class="form-group">
                 <label for="backupPath">Backup Path:</label>
-                <input type="text" id="backupPath" placeholder="Enter Backup Path">
+                <input type="text" id="backupPath" value="\backup" placeholder="\backup">
             </div>
             <div class="form-group">
                 <label for="backupInterval">存档周期 (seconds):</label>
-                <input type="number" id="backupInterval" placeholder="3600" min="1">
+                <input type="number" id="backupInterval" value="1800" placeholder="1800" min="1">
             </div>
             <div class="form-group">
                 <label for="processName">Server Process Name:</label>
-                <input type="text" id="processName" placeholder="Enter Server Process Name">
+                <input type="text" id="processName" value="Pal" placeholder="Pal">
             </div>
             <div class="form-group">
                 <label for="cmd">Server Start Command:</label>
-                <input type="text" id="cmd" placeholder="Enter Server Start Command">
+                <input type="text" id="cmd" value="C:\\Users\\kiros\\Desktop\\steamcmd\\steamapps\\common\\PalServer\\PalServer.exe" placeholder="C:\\Users\\kiros\\Desktop\\steamcmd\\steamapps\\common\\PalServer\\PalServer.exe">
             </div>
             <div class="form-group">
                 <label for="memTarget">Memory Target (%):</label>
-                <input type="number" id="memTarget" placeholder="Enter Memory Target" min="0" max="100">
+                <input type="number" id="memTarget" value="90" placeholder="90" min="1" max="99">
             </div>
             <div class="form-group">
                 <label for="checkSecond">Memory Check Interval (seconds):</label>
-                <input type="number" id="checkSecond" placeholder="Enter Memory Check Interval" min="1">
+                <input type="number" id="checkSecond" value="20" placeholder="20" min="1">
             </div>
             <div class="form-group">
                 <label for="rebootSecond">Reboot Delay (seconds):</label>
-                <input type="number" id="rebootSecond" placeholder="Enter Reboot Delay" min="1">
+                <input type="number" id="rebootSecond" value="10" placeholder="10" min="1">
             </div>
             <div class="form-group">
                 <label for="serverHost">RCON Host:</label>
-                <input type="text" id="serverHost" placeholder="Enter RCON Host">
+                <input type="text" id="serverHost" value="127.0.0.1" placeholder="127.0.0.1">
             </div>
             <div class="form-group">
                 <label for="serverPort">RCON Port:</label>
-                <input type="number" id="serverPort" placeholder="Enter RCON Port" min="1">
+                <input type="number" id="serverPort" value="25575" placeholder="25575" min="1" max="65535">
             </div>
             <div class="form-group">
                 <label for="rconPassword">RCON Password:</label>
-                <input type="password" id="rconPassword" placeholder="Enter RCON Password">
+                <input type="password" id="rconPassword" value="admin" placeholder="admin">
             </div>
             <div class="form-group">
-                <button id="startStopButton">Start Server</button>
+                <button id="startStopButton">启动</button>
             </div>
         </div>
         
@@ -147,6 +147,6 @@
         </div>
     </div>
 
-    <script src="renderer.js"></script>
+    <script src="dist/renderer.js"></script>
 </body>
 </html>
