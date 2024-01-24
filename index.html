@@ -1,45 +1,152 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Palworld Server Protector</title>
+    <meta charset="UTF-8">
+    <title>Palworld Server Manager</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
             padding: 20px;
+            background-color: #f4f4f4;
         }
-        label, input, button, textarea {
+        .main-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 auto;
+            max-width: 1200px; /* 调整为所需的最大宽度 */
+            align-items: stretch; /* 使子元素高度相同 */
+        }
+        .form-container, .output-container {
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .form-container {
+            flex-basis: 60%; /* 调整为所需的表单宽度 */
+            display: flex;
+            flex-direction: column; /* 垂直布局 */
+        }
+        .output-container {
+            flex-basis: 35%; /* 调整为所需的输出框宽度 */
+            display: flex;
+            flex-direction: column; /* 垂直布局 */
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        label {
             display: block;
-            margin-bottom: 10px;
+            margin-top: 10px;
+            color: #333;
+        }
+        input, textarea, button {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input, button {
             width: 100%;
         }
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #003d82;
+        }
         textarea {
-            height: 200px;
+            flex-grow: 1; /* 使文本区域填满剩余空间 */
+            resize: none; /* 禁用用户调整大小 */
         }
-        .container {
-            width: 50%;
-            margin: 0 auto;
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
         }
+
+        .form-group label, .form-group input {
+            margin: 0;
+        }
+
+        label {
+            flex-basis: 30%; /* 调整为所需的 label 宽度 */
+        }
+
+        input {
+            flex-basis: 65%; /* 调整为所需的 input 宽度 */
+        }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Palworld Server Protector</h1>
+    <div class="main-container">
+        <div class="form-container">
+            
+            <h1>Palworld Server Manager</h1>
+            <div class="form-group">
+                <label for="gamedataPath">Game Data Path:</label>
+                <input type="text" id="gamedataPath" placeholder="Enter Game Data Path">
+            </div>
+            <div class="form-group">
+                <label for="backupPath">Backup Path:</label>
+                <input type="text" id="backupPath" placeholder="Enter Backup Path">
+            </div>
+            <div class="form-group">
+                <label for="backupInterval">存档周期 (seconds):</label>
+                <input type="number" id="backupInterval" placeholder="3600" min="1">
+            </div>
+            <div class="form-group">
+                <label for="processName">Server Process Name:</label>
+                <input type="text" id="processName" placeholder="Enter Server Process Name">
+            </div>
+            <div class="form-group">
+                <label for="cmd">Server Start Command:</label>
+                <input type="text" id="cmd" placeholder="Enter Server Start Command">
+            </div>
+            <div class="form-group">
+                <label for="memTarget">Memory Target (%):</label>
+                <input type="number" id="memTarget" placeholder="Enter Memory Target" min="0" max="100">
+            </div>
+            <div class="form-group">
+                <label for="checkSecond">Memory Check Interval (seconds):</label>
+                <input type="number" id="checkSecond" placeholder="Enter Memory Check Interval" min="1">
+            </div>
+            <div class="form-group">
+                <label for="rebootSecond">Reboot Delay (seconds):</label>
+                <input type="number" id="rebootSecond" placeholder="Enter Reboot Delay" min="1">
+            </div>
+            <div class="form-group">
+                <label for="serverHost">RCON Host:</label>
+                <input type="text" id="serverHost" placeholder="Enter RCON Host">
+            </div>
+            <div class="form-group">
+                <label for="serverPort">RCON Port:</label>
+                <input type="number" id="serverPort" placeholder="Enter RCON Port" min="1">
+            </div>
+            <div class="form-group">
+                <label for="rconPassword">RCON Password:</label>
+                <input type="password" id="rconPassword" placeholder="Enter RCON Password">
+            </div>
+            <div class="form-group">
+                <button id="startStopButton">Start Server</button>
+            </div>
+        </div>
         
-        <label for="gamedataPath">Game Data Path:</label>
-        <input type="text" id="gamedataPath" placeholder="Enter Game Data Path">
-
-        <label for="backupPath">Backup Path:</label>
-        <input type="text" id="backupPath" placeholder="Enter Backup Path">
-
-        <!-- 可以根据需要添加更多的配置字段 -->
-
-        <button id="startStopButton">Start</button>
-        <textarea id="output" placeholder="Output will appear here..."></textarea>
+        <div class="output-container">
+            <h1>Server Output</h1>
+            <textarea id="output" placeholder="Output will be shown here..."></textarea>
+        </div>
     </div>
 
-    <script>
-        // 这里可以放置一些用于界面交互的 JavaScript 代码
-        // 或者您可以引入一个外部的 JavaScript 文件
-    </script>
+    <script src="renderer.js"></script>
 </body>
 </html>

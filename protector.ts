@@ -1,3 +1,5 @@
+// protector.ts
+
 import si from 'systeminformation';
 import { Rcon } from "rcon-client";
 import { exec } from 'child_process';
@@ -46,14 +48,16 @@ const rconPassword: string = 'admin';
 /************************/
 
 
-const rcon = new Rcon({
-    host: serverHost,
-    port: serverPort,
-    password: rconPassword
-});
 
 
-export async function sendMsgandReboot(): Promise<void> {
+
+export async function sendMsgandReboot(serverHost:string,serverPort:number,rconPassword:string): Promise<void> {
+    const rcon = new Rcon({
+        host: serverHost,
+        port: serverPort,
+        password: rconPassword
+    });
+
     try {
         await rcon.connect();
         console.log(`[${moment().format('HH:mm:ss')}] Connected to the server!`);
@@ -64,23 +68,6 @@ export async function sendMsgandReboot(): Promise<void> {
     } finally {
         rcon.end();
     }
-}
-
-export function check(): void {
-    checkMemoryUsage();
-    exec(`tasklist`, (err: Error | null, stdout: string, stderr: string) => {
-        if (err) {
-            console.error(`[${moment().format('HH:mm:ss')}] Error executing tasklist: ${err}`);
-            return;
-        }
-
-        if (stdout.toLowerCase().indexOf(processName.toLowerCase()) === -1) {
-            console.log(`[${moment().format('HH:mm:ss')}] ${processName} is not running. Attempting to start.`);
-            startProcess();
-        } else {
-            console.log(`[${moment().format('HH:mm:ss')}] ${processName} is already running.`);
-        }
-    });
 }
 
 
