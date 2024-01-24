@@ -4,6 +4,37 @@ const { ipcRenderer } = require('electron');
 
 let isrun:Boolean = false;
 
+
+function setInputs(isrun: Boolean){
+    if(isrun){//改只读
+        (document.getElementById('gamedataPath') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('backupPath') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('cmd') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('backupInterval') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('processName') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('memTarget') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('checkSecond') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('rebootSecond') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('serverHost') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('serverPort') as HTMLInputElement).setAttribute("readonly", "true");
+        (document.getElementById('rconPassword') as HTMLInputElement).setAttribute("readonly", "true");
+    }
+    else{
+        (document.getElementById('gamedataPath') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('backupPath') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('cmd') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('backupInterval') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('processName') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('memTarget') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('checkSecond') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('rebootSecond') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('serverHost') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('serverPort') as HTMLInputElement).removeAttribute("readonly");
+        (document.getElementById('rconPassword') as HTMLInputElement).removeAttribute("readonly");
+    }
+}
+  
+
 (document.getElementById('startStopButton') as HTMLElement).addEventListener('click', () => {
 
     if(!isrun){
@@ -45,6 +76,7 @@ let isrun:Boolean = false;
             rconPassword: rconPassword
         });
         isrun = true;
+        setInputs(isrun);
         (document.getElementById('startStopButton') as HTMLElement).innerHTML = '停止'
     }
     else{
@@ -53,6 +85,8 @@ let isrun:Boolean = false;
  
         });
         isrun = false;
+        setInputs(isrun);
+
         (document.getElementById('startStopButton') as HTMLElement).innerHTML = '启动'
 
     }

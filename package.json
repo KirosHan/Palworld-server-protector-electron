@@ -23,6 +23,15 @@
     "@types/node": "^20.11.5",
     "@types/systeminformation": "^3.54.1",
     "electron": "^28.1.4",
+    "electron-builder": "^24.9.1",
+    "electron-packager": "^17.1.2",
     "typescript": "^5.3.3"
+  },
+  "build": {
+    "appId": "com.onbeta.PalServerProtector",
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    }
   }
 }

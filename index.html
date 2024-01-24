@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Palworld Server Manager</title>
+    <title>PalServer Protector By Kiros</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -91,49 +91,49 @@
     <div class="main-container">
         <div class="form-container">
             
-            <h1>Palworld Server Manager</h1>
+            <h1>Palworld Server Protector</h1>
             <div class="form-group">
-                <label for="gamedataPath">Game Data Path:</label>
-                <input type="text" id="gamedataPath" value="C:\\Users\\kiros\\Desktop\\steamcmd\\steamapps\\common\\PalServer\\Pal\\Saved\\SaveGames" placeholder="C:\\Users\\kiros\\Desktop\\steamcmd\\steamapps\\common\\PalServer\\Pal\\Saved\\SaveGames">
+                <label for="gamedataPath">游戏存档路径:</label>
+                <input type="text" id="gamedataPath" value="C:\Users\kiros\Desktop\steamcmd\steamapps\common\PalServer\Pal\Saved\SaveGames" placeholder="服务端游戏存档的路径">
             </div>
             <div class="form-group">
-                <label for="backupPath">Backup Path:</label>
-                <input type="text" id="backupPath" value="\backup" placeholder="\backup">
+                <label for="backupPath">备份存放路径:</label>
+                <input type="text" id="backupPath" value="C:\Users\kiros\Desktop\backdata" placeholder="备份文档存放的路径">
             </div>
             <div class="form-group">
-                <label for="backupInterval">存档周期 (seconds):</label>
+                <label for="backupInterval">存档周期 (秒):</label>
                 <input type="number" id="backupInterval" value="1800" placeholder="1800" min="1">
             </div>
             <div class="form-group">
-                <label for="processName">Server Process Name:</label>
-                <input type="text" id="processName" value="Pal" placeholder="Pal">
+                <label for="processName">进程名称:</label>
+                <input type="text" id="processName" value="Pal" placeholder="服务端进程的名称">
             </div>
             <div class="form-group">
-                <label for="cmd">Server Start Command:</label>
-                <input type="text" id="cmd" value="C:\\Users\\kiros\\Desktop\\steamcmd\\steamapps\\common\\PalServer\\PalServer.exe" placeholder="C:\\Users\\kiros\\Desktop\\steamcmd\\steamapps\\common\\PalServer\\PalServer.exe">
+                <label for="cmd">服务端启动路径:</label>
+                <input type="text" id="cmd" value="C:\Users\kiros\Desktop\steamcmd\steamapps\common\PalServer\PalServer.exe" placeholder="服务端程序启动的路径">
             </div>
             <div class="form-group">
-                <label for="memTarget">Memory Target (%):</label>
+                <label for="memTarget">内存阈值 (%):</label>
                 <input type="number" id="memTarget" value="90" placeholder="90" min="1" max="99">
             </div>
             <div class="form-group">
-                <label for="checkSecond">Memory Check Interval (seconds):</label>
+                <label for="checkSecond">内存检测周期 (秒):</label>
                 <input type="number" id="checkSecond" value="20" placeholder="20" min="1">
             </div>
             <div class="form-group">
-                <label for="rebootSecond">Reboot Delay (seconds):</label>
+                <label for="rebootSecond">重启延迟 (秒):</label>
                 <input type="number" id="rebootSecond" value="10" placeholder="10" min="1">
             </div>
             <div class="form-group">
-                <label for="serverHost">RCON Host:</label>
-                <input type="text" id="serverHost" value="127.0.0.1" placeholder="127.0.0.1">
+                <label for="serverHost">RCON 地址:</label>
+                <input type="text" id="serverHost" value="127.0.0.1" placeholder="默认本机127.0.0.1请不要改动">
             </div>
             <div class="form-group">
-                <label for="serverPort">RCON Port:</label>
+                <label for="serverPort">RCON 端口:</label>
                 <input type="number" id="serverPort" value="25575" placeholder="25575" min="1" max="65535">
             </div>
             <div class="form-group">
-                <label for="rconPassword">RCON Password:</label>
+                <label for="rconPassword">RCON 密码:</label>
                 <input type="password" id="rconPassword" value="admin" placeholder="admin">
             </div>
             <div class="form-group">
@@ -142,8 +142,8 @@
         </div>
         
         <div class="output-container">
-            <h1>Server Output</h1>
-            <textarea id="output" placeholder="Output will be shown here..."></textarea>
+            <h1> </h1>
+            <textarea id="output" placeholder="输出信息会在这里显示..."></textarea>
         </div>
     </div>
 

@@ -1,5 +1,5 @@
 // main.ts
-import { app, BrowserWindow, ipcMain,globalShortcut  } from 'electron';
+import { app, BrowserWindow, ipcMain,Menu   } from 'electron';
 import {
   startProcess,
   checkMemoryUsage,
@@ -48,15 +48,20 @@ let rconPassword: string = 'admin';
 
 function createWindow() {
   mainWindow = new BrowserWindow({
+    title: "PalServer Protector By Kiros",
+    width: 800,      // 设置窗口的宽度
+    height: 800,     // 设置窗口的高度
+    resizable: false, // 禁止调整窗口大小
     // ...窗口配置
     webPreferences: {
-      devTools: true, // 确保开启开发者工具
+      devTools: false, // 确保开启开发者工具
 
       nodeIntegration: true,
       contextIsolation: false,
       //preload: path.join(__dirname, 'preload.js') // 如果使用 preload 脚本
     }
   });
+  Menu.setApplicationMenu(null);
 
   mainWindow.loadFile('index.html');
   // ...其他窗口创建相关的代码
@@ -79,6 +84,7 @@ function sendToConsole(str: string) {
       console.log('mainWindow is null');
     }
 }
+
 
 
 ipcMain.on('perform-action', (event, arg) => {
@@ -135,9 +141,13 @@ ipcMain.on('perform-action', (event, arg) => {
       clearInterval(backupIntervaljob);
     }
     backupIntervaljob = setInterval(() => {
+      sendToConsole(`[${moment().format('HH:mm:ss')}] 正在备份游戏存档。`)
+
       backupDirectory(gamedataPath, backupPath);
       // 完成备份后的操作
     }, parseInt(arg.backupInterval) * 1000);
+
+    sendToConsole(`[${moment().format('HH:mm:ss')}] 正在备份游戏存档。`)
     backupDirectory(gamedataPath, backupPath); //启动时先备份一次
 
     isRunning = true;
