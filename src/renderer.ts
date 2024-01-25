@@ -47,7 +47,7 @@ function setInputs(isrun: Boolean){
         //存档备份周期
         const backupInterval = (document.getElementById('backupInterval') as HTMLInputElement).value;
         //监控服务端名称
-        const processName = (document.getElementById('processName') as HTMLInputElement).value;
+     //   const processName = (document.getElementById('processName') as HTMLInputElement).value;
         //内存占用百分比阈值（%）
         const memTarget = (document.getElementById('memTarget') as HTMLInputElement).value;
         //内存监控周期（秒）
@@ -67,7 +67,7 @@ function setInputs(isrun: Boolean){
             gamedataPath: gamedataPath,
             backupPath: backupPath,
             backupInterval: backupInterval,
-            processName: processName,
+     //       processName: processName,
             memTarget: memTarget,
             checkSecond: checkSecond,
             rebootSecond: rebootSecond,
@@ -96,6 +96,9 @@ function setInputs(isrun: Boolean){
 // 监听主进程的响应
 ipcRenderer.on('action-response', (event, message) => {
     console.log(message);
-   (document.getElementById('output') as HTMLTextAreaElement).value += message + '\n';
+    const outputElement = document.getElementById('output') as HTMLTextAreaElement;
+    outputElement.value += message + '\n';
+    // 滚动到底部
+    outputElement.scrollTop = outputElement.scrollHeight;
 });
 

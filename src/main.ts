@@ -10,6 +10,8 @@ import {
 import path from 'path';
 import { exec } from 'child_process';
 import moment from 'moment';
+import ps from 'ps-node';
+import pidusage from 'pidusage';
 
 let mainWindow: BrowserWindow | null;
 let isRunning: boolean = false;
@@ -27,7 +29,7 @@ let backupPath: string = path.join(__dirname, 'backup');
 //存档备份周期
 let backupInterval: number = 1800;
 //监控服务端名称
-let processName: string = "Pal";
+//let processName: string = "Pal";
 //服务端启动路径
 let cmd: string = `"C:\\Users\\kiros\\Desktop\\steamcmd\\steamapps\\common\\PalServer\\PalServer.exe"`;
 //内存占用百分比阈值（%）
@@ -48,13 +50,13 @@ let rconPassword: string = 'admin';
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    title: "PalServer Protector By Kiros",
+    title: "Protector for PalServer  By Kiros",
     width: 800,      // 设置窗口的宽度
     height: 800,     // 设置窗口的高度
-    resizable: false, // 禁止调整窗口大小
+     resizable: false, // 禁止调整窗口大小
     // ...窗口配置
     webPreferences: {
-      devTools: false, // 确保开启开发者工具
+      devTools: true, // 确保开启开发者工具
 
       nodeIntegration: true,
       contextIsolation: false,
@@ -63,14 +65,28 @@ function createWindow() {
   });
   Menu.setApplicationMenu(null);
 
-  mainWindow.loadFile('index.html');
+  let indexPath: string;
+
+    if (app.isPackaged) {
+        // 打包环境
+        indexPath = path.join(process.resourcesPath, 'app.asar', 'dist/index.html');
+    } else {
+        // 开发环境
+        indexPath = path.join(__dirname, 'index.html');
+    }
   // ...其他窗口创建相关的代码
+  console.log("Loading index from:", indexPath);
+  mainWindow.loadFile(indexPath);
 }
 
 
 app.whenReady().then(() => {
   createWindow()
   // 注册一个 'Ctrl+I' 的全局快捷键
+  if (!app.isPackaged && mainWindow) {
+
+    mainWindow.webContents.openDevTools();
+  }
 
 });
 
@@ -86,13 +102,65 @@ function sendToConsole(str: string) {
 }
 
 
+async function checkServerStatus(): Promise<void> {
+  try {
+    // 检查内存使用情况
+    const memUsage = await checkMemoryUsage();
+    sendToConsole(`[${moment().format('HH:mm:ss')}] 当前内存占用: ${memUsage}%`);
+
+    if (memUsage > memTarget) {
+      console.log(`负载过高，即将重启。`);
+      sendToConsole(`[${moment().format('HH:mm:ss')}] 负载过高，即将重启。`);
+      await sendMsgandReboot(serverHost, serverPort, rconPassword);
+    }
+
+    // 查找特定路径的进程
+    ps.lookup({}, (err, resultList) => {
+      if (err) {
+        throw err;
+      }
+
+      let isFound = false;
+      for (const process of resultList) {
+        if (process && process.command === cmd) {
+          isFound = true;
+          // pidusage(process.pid, (err, stats) => {
+          //   if (err) {
+          //     // 同样，使用 err.message
+          //     console.error(`PID使用情况错误: ${err.message}`);
+          //     return;
+          //   }
+          //   const memoryInGB: number = stats.memory / Math.pow(1024, 3); // 将内存从字节转换为GB
+
+          //   console.log(`进程 ${process.pid} 的 CPU 使用率: ${stats.cpu}`);
+          //   console.log(`进程 ${process.pid} 的内存使用: ${stats.memory}`);
+          //   sendToConsole(`[${moment().format('HH:mm:ss')}] 发现服务端进程(${process.pid})占用内存${memoryInGB.toFixed(2)}G`);
+          // });
+          sendToConsole(`[${moment().format('HH:mm:ss')}] 发现服务端进程(${process.pid})`);
+
+          break;
+        }
+      }
+
+      if (!isFound) {
+        sendToConsole(`[${moment().format('HH:mm:ss')}] 未找到进程，尝试启动新服务端`);
+        startProcess(cmd);
+      }
+    });
+
+  } catch (error) {
+    console.error(`错误: ${error}`);
+    sendToConsole(`[${moment().format('HH:mm:ss')}] 进程查找失败。请检查。`);
+  }
+}
+
 
 ipcMain.on('perform-action', (event, arg) => {
   if (arg.action === 'start') {
     gamedataPath = arg.gamedataPath;
     backupPath = arg.backupPath;
     backupInterval = parseInt(arg.backupInterval);
-    processName = arg.processName;
+    //processName = arg.processName;
     cmd = arg.cmd;
     memTarget = parseInt(arg.memTarget);
     checkSecond = parseInt(arg.checkSecond);
@@ -108,32 +176,7 @@ ipcMain.on('perform-action', (event, arg) => {
       clearInterval(checkIntervaljob);
     }
     checkIntervaljob = setInterval(() => {
-      checkMemoryUsage().then(memUsage => {
-        sendToConsole(`[${moment().format('HH:mm:ss')}] 当前内存占用百分比: ${memUsage}%`)
-        // 可以将内存使用情况发送回渲染器进程
-        if (memUsage > memTarget) {
-          console.log(`负载过高，即将重启。`);
-          sendToConsole(`[${moment().format('HH:mm:ss')}] 负载过高，即将重启。`)
-          sendMsgandReboot(serverHost,serverPort,rconPassword);
-        }
-        //event.reply('action-response', `Memory Usage: ${memUsage}%`);
-      });
-
-        exec(`tasklist`, (err: Error | null, stdout: string, stderr: string) => {
-            if (err) {
-                console.error(`[${moment().format('HH:mm:ss')}] Error executing tasklist: ${err}`);
-                return;
-            }
-
-            if (stdout.toLowerCase().indexOf(processName.toLowerCase()) === -1) {
-                console.log(`[${moment().format('HH:mm:ss')}] ${processName} is not running. Attempting to start.`);
-                sendToConsole(`[${moment().format('HH:mm:ss')}] ${processName} 没有运行. 尝试启动.`)
-                startProcess(cmd);
-            } else {
-                console.log(`[${moment().format('HH:mm:ss')}] ${processName} is already running.`);
-                sendToConsole(`[${moment().format('HH:mm:ss')}] ${processName} 正在运行。`)
-            }
-        });
+      checkServerStatus();
     }, parseInt(arg.checkSecond) * 1000);
 
     // 设置备份的定时任务
