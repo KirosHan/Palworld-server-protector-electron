@@ -18,6 +18,14 @@ GUI版本 Palworld服务端进程守护+内存监控+优雅重启+自动存档
 
 [Releases](https://github.com/KirosHan/Palworld-server-protector-electron/releases)
 
+## Star and a Coffee
+
+如果这个仓库对你有用，欢迎点个Star⭐︎
+
+也可以Buy me a coffee☕︎
+
+![BuyMeACoffee](https://raw.githubusercontent.com/KirosHan/Palworld-server-protector-electron/main/PNG/buymeacoffee.png)
+
 ## 编译运行
 使用前请先安装nodejs环境
 服务端配置文件中RCONEnabled需要设置为True
