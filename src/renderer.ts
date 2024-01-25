@@ -61,13 +61,7 @@ function setInputs(isrun: Boolean){
         //rcon密码
         const rconPassword = (document.getElementById('rconPassword') as HTMLInputElement).value;
 
-        if(rebootSecond>=checkSecond){
-            const outputElement = document.getElementById('output') as HTMLTextAreaElement;
-            outputElement.value += '重启延迟不能比监测周期更长，请修改。' + '\n';
-            // 滚动到底部
-            outputElement.scrollTop = outputElement.scrollHeight;
-            return;
-        }
+
         if(gamedataPath.indexOf(' ') !== -1){
             const outputElement = document.getElementById('output') as HTMLTextAreaElement;
             outputElement.value += '游戏存档目录不能包含空格，请修改。' + '\n';

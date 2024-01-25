@@ -61,6 +61,7 @@ export async function sendMsgandReboot(serverHost:string,serverPort:number,rconP
     try {
         await rcon.connect();
         console.log(`[${moment().format('HH:mm:ss')}] Connected to the server!`);
+        // await rcon.send(`save`);
         await rcon.send(`Shutdown ${rebootSecond} The_server_will_restart_in_${rebootSecond}_seconds.`);
         console.log(`[${moment().format('HH:mm:ss')}] Command sent, not waiting for response`);
     } catch (error) {

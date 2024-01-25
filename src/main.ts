@@ -143,7 +143,9 @@ async function checkServerStatus(): Promise<void> {
 
     if (memUsage > memTarget) {
       console.log(`负载过高，即将重启。`);
-      sendToConsole(`[${moment().format('HH:mm:ss')}] 负载过高，即将重启。`);
+      sendToConsole(`[${moment().format('HH:mm:ss')}] 内存负载过高`);
+      sendToConsole(`[${moment().format('HH:mm:ss')}] 紧急备份存档并发送Rcon指令`)
+      backupDirectory(gamedataPath, backupPath);
       await sendMsgandReboot(serverHost, serverPort, rconPassword);
     }
 
