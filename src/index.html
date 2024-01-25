@@ -9,7 +9,10 @@
             margin: 0;
             padding: 20px;
             background-color: #f4f4f4;
+            overflow: hidden; /* 隐藏滚动条并禁止滚动 */
+
         }
+
         .main-container {
             display: flex;
             justify-content: space-between;
@@ -17,31 +20,36 @@
             max-width: 1200px; /* 调整为所需的最大宽度 */
             align-items: stretch; /* 使子元素高度相同 */
         }
+
         .form-container, .output-container {
             background: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 5px;
         }
+
         .form-container {
             flex-basis: 60%; /* 调整为所需的表单宽度 */
             display: flex;
             flex-direction: column; /* 垂直布局 */
         }
+
         .output-container {
             flex-basis: 35%; /* 调整为所需的输出框宽度 */
             display: flex;
             flex-direction: column; /* 垂直布局 */
         }
+
         h1, h2 {
             color: #333;
             text-align: center;
         }
+
         label {
-            display: block;
             margin-top: 10px;
             color: #333;
         }
+
         input, textarea, button {
             padding: 10px;
             margin-top: 5px;
@@ -49,9 +57,11 @@
             border-radius: 5px;
             box-sizing: border-box;
         }
+
         input, button {
             width: 100%;
         }
+
         button {
             background-color: #0056b3;
             color: white;
@@ -59,31 +69,77 @@
             cursor: pointer;
             margin-top: 20px;
         }
+
         button:hover {
             background-color: #003d82;
         }
+
         textarea {
             flex-grow: 1; /* 使文本区域填满剩余空间 */
             resize: none; /* 禁用用户调整大小 */
         }
+
         .form-group {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            align-items: center; /* 确保子元素在竖直方向上居中对齐 */
             margin-top: 10px;
         }
 
-        .form-group label, .form-group input {
-            margin: 0;
+        .form-group label {
+            flex-basis: 35%; /* 调整为所需的 label 宽度 */
+            text-align: right; /* 让标签文本右对齐 */
+            padding-right: 10px; /* 在标签和文本框之间添加右侧间距 */
+            vertical-align: middle; /* 确保输入框在行内垂直居中 */
+
         }
 
-        label {
-            flex-basis: 30%; /* 调整为所需的 label 宽度 */
+        .form-group input[type="text"], .form-group input[type="number"], .form-group input[type="password"], .dialog-button {
+            padding: 8px 10px; /* 统一内边距以调整高度 */
+            margin-right: 5px; /* 在文本框和按钮之间添加右侧间距 */
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            vertical-align: middle; /* 确保输入框在行内垂直居中 */
+
         }
 
-        input {
-            flex-basis: 65%; /* 调整为所需的 input 宽度 */
+        .dialog-button {
+            flex-basis: 100px; /* 设置按钮的初始宽度 */
+            background-color: #d86f0d;
+            color: white;
+            border: 1px solid #ddd; /* 添加边框以匹配输入框 */
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            vertical-align: middle; /* 确保输入框在行内垂直居中 */
+
         }
+
+        .dialog-button:hover {
+            background-color: #d86f0d;
+        }
+
+        .dialog-button:active {
+            transform: translateY(1px);
+        }
+
+        .version {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .version label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .version a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .version a:hover {
+            text-decoration: underline;
+        }
+
 
     </style>
 </head>
@@ -93,15 +149,17 @@
             
             <h1>Palworld Server Protector</h1>
             <div class="form-group">
-                <label for="gamedataPath">游戏存档路径:</label>
+                <label for="gamedataPath">游戏存档:</label>
                 <input type="text" id="gamedataPath" value="C:\Users\kiros\Desktop\steamcmd\steamapps\common\PalServer\Pal\Saved\SaveGames" placeholder="服务端游戏存档的路径">
+                <button class="dialog-button" id="openGamedataPathDialog">目录</button>
             </div>
             <div class="form-group">
-                <label for="backupPath">备份存放路径:</label>
+                <label for="backupPath">备份存放:</label>
                 <input type="text" id="backupPath" value="C:\Users\kiros\Desktop\backdata" placeholder="备份文档存放的路径">
+                <button class="dialog-button" id="openBackupPathDialog">目录</button>
             </div>
             <div class="form-group">
-                <label for="backupInterval">存档周期 (秒):</label>
+                <label for="backupInterval">存档周期(秒):</label>
                 <input type="number" id="backupInterval" value="1800" placeholder="1800" min="1">
             </div>
 <!--            <div class="form-group">
@@ -109,24 +167,25 @@
                 <input type="text" id="processName" value="Pal" placeholder="服务端进程的名称">
             </div>-->
             <div class="form-group">
-                <label for="cmd">服务端启动路径:</label>
+                <label for="cmd">服务端路径:</label>
                 <input type="text" id="cmd" value="C:\Users\kiros\Desktop\steamcmd\steamapps\common\PalServer\PalServer.exe" placeholder="服务端程序启动的路径">
+                <button class="dialog-button" id="openCmdPathDialog">文件</button>
             </div>
             <div class="form-group">
-                <label for="memTarget">内存阈值 (%):</label>
+                <label for="memTarget">内存阈值(%):</label>
                 <input type="number" id="memTarget" value="90" placeholder="90" min="1" max="99">
             </div>
             <div class="form-group">
-                <label for="checkSecond">内存检测周期 (秒):</label>
+                <label for="checkSecond">检测周期(秒):</label>
                 <input type="number" id="checkSecond" value="20" placeholder="20" min="1">
             </div>
             <div class="form-group">
-                <label for="rebootSecond">重启延迟 (秒):</label>
+                <label for="rebootSecond">重启延迟(秒):</label>
                 <input type="number" id="rebootSecond" value="10" placeholder="10" min="1">
             </div>
             <div class="form-group">
                 <label for="serverHost">RCON 地址:</label>
-                <input type="text" id="serverHost" value="127.0.0.1" placeholder="默认本机127.0.0.1请不要改动">
+                <input type="text" id="serverHost" value="127.0.0.1" placeholder="默认本机127.0.0.1请不要改动" readonly>
             </div>
             <div class="form-group">
                 <label for="serverPort">RCON 端口:</label>
@@ -145,8 +204,12 @@
             <h1> </h1>
             <textarea id="output" placeholder="输出信息会在这里显示..."></textarea>
         </div>
-    </div>
 
+     
+    </div>
+    <div class="version">
+        <label>Version 1.0.0 - <a href="https://github.com/KirosHan/Palworld-server-protector-electron" target="_blank">Github</a></label>
+    </div>
     <script src="renderer.js"></script>
 </body>
 </html>

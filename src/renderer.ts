@@ -7,11 +7,12 @@ let isrun:Boolean = false;
 
 function setInputs(isrun: Boolean){
     if(isrun){//改只读
+    
         (document.getElementById('gamedataPath') as HTMLInputElement).setAttribute("readonly", "true");
         (document.getElementById('backupPath') as HTMLInputElement).setAttribute("readonly", "true");
         (document.getElementById('cmd') as HTMLInputElement).setAttribute("readonly", "true");
         (document.getElementById('backupInterval') as HTMLInputElement).setAttribute("readonly", "true");
-        (document.getElementById('processName') as HTMLInputElement).setAttribute("readonly", "true");
+        //(document.getElementById('processName') as HTMLInputElement).setAttribute("readonly", "true");
         (document.getElementById('memTarget') as HTMLInputElement).setAttribute("readonly", "true");
         (document.getElementById('checkSecond') as HTMLInputElement).setAttribute("readonly", "true");
         (document.getElementById('rebootSecond') as HTMLInputElement).setAttribute("readonly", "true");
@@ -24,11 +25,11 @@ function setInputs(isrun: Boolean){
         (document.getElementById('backupPath') as HTMLInputElement).removeAttribute("readonly");
         (document.getElementById('cmd') as HTMLInputElement).removeAttribute("readonly");
         (document.getElementById('backupInterval') as HTMLInputElement).removeAttribute("readonly");
-        (document.getElementById('processName') as HTMLInputElement).removeAttribute("readonly");
+        //(document.getElementById('processName') as HTMLInputElement).removeAttribute("readonly");
         (document.getElementById('memTarget') as HTMLInputElement).removeAttribute("readonly");
         (document.getElementById('checkSecond') as HTMLInputElement).removeAttribute("readonly");
         (document.getElementById('rebootSecond') as HTMLInputElement).removeAttribute("readonly");
-        (document.getElementById('serverHost') as HTMLInputElement).removeAttribute("readonly");
+        //(document.getElementById('serverHost') as HTMLInputElement).removeAttribute("readonly");
         (document.getElementById('serverPort') as HTMLInputElement).removeAttribute("readonly");
         (document.getElementById('rconPassword') as HTMLInputElement).removeAttribute("readonly");
     }
@@ -36,7 +37,6 @@ function setInputs(isrun: Boolean){
   
 
 (document.getElementById('startStopButton') as HTMLElement).addEventListener('click', () => {
-
     if(!isrun){
         //游戏存档目录
         const gamedataPath = (document.getElementById('gamedataPath') as HTMLInputElement).value;
@@ -61,6 +61,34 @@ function setInputs(isrun: Boolean){
         //rcon密码
         const rconPassword = (document.getElementById('rconPassword') as HTMLInputElement).value;
 
+        if(rebootSecond>=checkSecond){
+            const outputElement = document.getElementById('output') as HTMLTextAreaElement;
+            outputElement.value += '重启延迟不能比监测周期更长，请修改。' + '\n';
+            // 滚动到底部
+            outputElement.scrollTop = outputElement.scrollHeight;
+            return;
+        }
+        if(gamedataPath.indexOf(' ') !== -1){
+            const outputElement = document.getElementById('output') as HTMLTextAreaElement;
+            outputElement.value += '游戏存档目录不能包含空格，请修改。' + '\n';
+            // 滚动到底部
+            outputElement.scrollTop = outputElement.scrollHeight;
+            return;
+        }
+        if(backupPath.indexOf(' ') !== -1){
+            const outputElement = document.getElementById('output') as HTMLTextAreaElement;
+            outputElement.value += '备份保存目录不能包含空格，请修改。' + '\n';
+            // 滚动到底部
+            outputElement.scrollTop = outputElement.scrollHeight;
+            return;
+        }
+        if(cmd.indexOf(' ') !== -1){
+            const outputElement = document.getElementById('output') as HTMLTextAreaElement;
+            outputElement.value += '启动路径不能包含空格，请修改。' + '\n';
+            // 滚动到底部
+            outputElement.scrollTop = outputElement.scrollHeight;
+            return;
+        }
         ipcRenderer.send('perform-action', {
             action: 'start',
             cmd: cmd,
@@ -102,3 +130,59 @@ ipcRenderer.on('action-response', (event, message) => {
     outputElement.scrollTop = outputElement.scrollHeight;
 });
 
+
+function getElementById<T extends HTMLElement>(id: string): T | null {
+  return document.getElementById(id) as T | null;
+}
+
+function setupDialogOpeners() {
+  const gamedataPathButton = getElementById<HTMLButtonElement>('openGamedataPathDialog');
+  const backupPathButton = getElementById<HTMLButtonElement>('openBackupPathDialog');
+  const cmdPathButton = getElementById<HTMLButtonElement>('openCmdPathDialog');
+
+  gamedataPathButton?.addEventListener('click', () => {
+    ipcRenderer.send('open-directory-dialog', { id: 'gamedataPath' });
+  });
+
+  backupPathButton?.addEventListener('click', () => {
+    ipcRenderer.send('open-directory-dialog', { id: 'backupPath' });
+  });
+
+  cmdPathButton?.addEventListener('click', () => {
+    ipcRenderer.send('open-file-dialog', { id: 'cmd' });
+  });
+}
+
+function setupIpcListeners() {
+  ipcRenderer.on('selected-directory', (event, arg) => {
+    const path = arg.path;
+    const id = arg.id;
+
+    if (id === 'gamedataPath') {
+      const gamedataPathInput = getElementById<HTMLInputElement>('gamedataPath');
+      if (gamedataPathInput) {
+        gamedataPathInput.value = path;
+      }
+    } else if (id === 'backupPath') {
+      const backupPathInput = getElementById<HTMLInputElement>('backupPath');
+      if (backupPathInput) {
+        backupPathInput.value = path;
+      }
+    }
+  });
+
+  ipcRenderer.on('selected-file', (event, arg) => {
+    const path = arg.path;
+    const id = arg.id;
+
+    if (id === 'cmd') {
+      const cmdInput = getElementById<HTMLInputElement>('cmd');
+      if (cmdInput) {
+        cmdInput.value = path;
+      }
+    }
+  });
+}
+
+setupDialogOpeners();
+setupIpcListeners();

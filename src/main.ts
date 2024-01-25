@@ -1,5 +1,5 @@
 // main.ts
-import { app, BrowserWindow, ipcMain,Menu   } from 'electron';
+import { app, BrowserWindow, ipcMain,Menu,dialog  } from 'electron';
 import {
   startProcess,
   checkMemoryUsage,
@@ -11,7 +11,6 @@ import path from 'path';
 import { exec } from 'child_process';
 import moment from 'moment';
 import ps from 'ps-node';
-import pidusage from 'pidusage';
 
 let mainWindow: BrowserWindow | null;
 let isRunning: boolean = false;
@@ -48,12 +47,28 @@ let rconPassword: string = 'admin';
 /************************/
 
 
+let indexPath: string;
+let iconPath: string;
+
+if (app.isPackaged) {
+    // 打包环境
+    indexPath = path.join(process.resourcesPath, 'app.asar', 'dist/index.html');
+    iconPath = path.join(process.resourcesPath, 'app.asar', 'dist/icon.ico');
+} else {
+    // 开发环境
+    indexPath = path.join(__dirname, 'index.html');
+    iconPath = path.join(__dirname, 'icon.ico');
+}
+
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     title: "Protector for PalServer  By Kiros",
     width: 800,      // 设置窗口的宽度
-    height: 800,     // 设置窗口的高度
+    height: 820,     // 设置窗口的高度
      resizable: false, // 禁止调整窗口大小
+     icon: iconPath,
+
     // ...窗口配置
     webPreferences: {
       devTools: true, // 确保开启开发者工具
@@ -65,15 +80,7 @@ function createWindow() {
   });
   Menu.setApplicationMenu(null);
 
-  let indexPath: string;
-
-    if (app.isPackaged) {
-        // 打包环境
-        indexPath = path.join(process.resourcesPath, 'app.asar', 'dist/index.html');
-    } else {
-        // 开发环境
-        indexPath = path.join(__dirname, 'index.html');
-    }
+ 
   // ...其他窗口创建相关的代码
   console.log("Loading index from:", indexPath);
   mainWindow.loadFile(indexPath);
@@ -89,6 +96,32 @@ app.whenReady().then(() => {
   }
 
 });
+
+ipcMain.on('open-directory-dialog', (event, arg) => {
+  dialog.showOpenDialog(mainWindow!, {
+    properties: ['openDirectory']
+  }).then(result => {
+    if (!result.canceled && result.filePaths.length > 0) {
+      event.reply('selected-directory', { path: result.filePaths[0], id: arg.id });
+    }
+  }).catch(err => {
+    console.error(err);
+  });
+});
+
+ipcMain.on('open-file-dialog', (event, arg) => {
+  dialog.showOpenDialog(mainWindow!, {
+    properties: ['openFile'],
+    filters: [{ name: 'Executables', extensions: ['exe'] }]
+  }).then(result => {
+    if (!result.canceled && result.filePaths.length > 0) {
+      event.reply('selected-file', { path: result.filePaths[0], id: arg.id });
+    }
+  }).catch(err => {
+    console.error(err);
+  });
+});
+
 
 
 
