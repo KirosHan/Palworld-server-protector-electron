@@ -14,6 +14,10 @@ GUI版本 Palworld服务端进程守护+内存监控+优雅重启+自动存档
 ## 效果图
 ![预览](https://raw.githubusercontent.com/KirosHan/Palworld-server-protector-electron/main/PNG/screenshot%402x.png)
 
+## 直接下载（懒人专属）
+
+[Releases](https://github.com/KirosHan/Palworld-server-protector/releases)
+
 ## 编译运行
 使用前请先安装nodejs环境
 服务端配置文件中RCONEnabled需要设置为True
