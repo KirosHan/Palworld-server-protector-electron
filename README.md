@@ -1,8 +1,6 @@
-# Palworld-server-protecter
- Palworld服务端进程守护+内存监控+优雅重启
+# Palworld-server-protecter-electron
+GUI版本 Palworld服务端进程守护+内存监控+优雅重启+自动存档
 （for windows）
-
-~~希望有人可以帮我加上备份存档功能，懒了。~~  已完成
 
 ## 功能
 - 内存监控（自定义阈值触发）
@@ -10,20 +8,24 @@
 - 优雅重启（内存占用达到阈值后自动发送公告并关服等待重启）
 - 自动备份存档
 
-## 使用方法
+## 注意
+- 本次扩展仅针对动手能力弱的用户，因UI启动后本身会占用内存，推荐动手能力强的用户仍然使用命令行版本[https://github.com/KirosHan/Palworld-server-protector](https://github.com/KirosHan/Palworld-server-protector)
+
+## 效果图
+[预览](https://github.com/KirosHan/Palworld-server-protector-electron/blob/main/PNG/screenshot@2x.png?raw=true)
+
+## 编译运行
 使用前请先安装nodejs环境
 
 服务端配置文件中RCONEnabled需要设置为True
 
-1.修改`index.ts`中顶部的配置信息，如路径、周期、端口、密码等
+1.在目录命令行中运行`npm install`
 
-2.在目录命令行中运行`npm install`
+2.在目录命令行中运行`npm start`
 
-3.在目录命令行中运行`npm run build`
+## 打包
 
-4.在目录命令行中运行`npm start`
-
-游戏存档备份会保存到/dist/backup中
+在目录命令行中运行`npx electron-builder --win --x64`
 
 ## 运行逻辑
 
