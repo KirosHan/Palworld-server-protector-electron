@@ -12,11 +12,10 @@ GUI版本 Palworld服务端进程守护+内存监控+优雅重启+自动存档
 - 本次扩展仅针对动手能力弱的用户，因UI启动后本身会占用内存，推荐动手能力强的用户仍然使用命令行版本[https://github.com/KirosHan/Palworld-server-protector](https://github.com/KirosHan/Palworld-server-protector)
 
 ## 效果图
-[预览](https://github.com/KirosHan/Palworld-server-protector-electron/blob/main/PNG/screenshot@2x.png?raw=true)
+![预览](https://raw.githubusercontent.com/KirosHan/Palworld-server-protector-electron/main/PNG/screenshot%402x.png)
 
 ## 编译运行
 使用前请先安装nodejs环境
-
 服务端配置文件中RCONEnabled需要设置为True
 
 1.在目录命令行中运行`npm install`
