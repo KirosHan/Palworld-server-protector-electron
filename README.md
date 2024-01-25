@@ -16,7 +16,7 @@ GUI版本 Palworld服务端进程守护+内存监控+优雅重启+自动存档
 
 ## 直接下载（懒人专属）
 
-[Releases](https://github.com/KirosHan/Palworld-server-protector/releases)
+[Releases](https://github.com/KirosHan/Palworld-server-protector-electron/releases)
 
 ## 编译运行
 使用前请先安装nodejs环境
