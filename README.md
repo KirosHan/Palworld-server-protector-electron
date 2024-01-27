@@ -2,6 +2,13 @@
 GUI版本 Palworld服务端进程守护+内存监控+优雅重启+自动存档
 （for windows）
 
+# Attention!!注意！！项目迁移
+由于electron依赖于浏览器引擎所以占用内存过高，违背了本工具的初衷
+
+所以本项目已使用.NET重新开发，项目迁移至[https://github.com/KirosHan/Palworld-server-protector-DotNet](https://github.com/KirosHan/Palworld-server-protector-DotNet)
+
+本仓库将不再维护。立个碑🪦
+
 ## 功能
 - 内存监控（自定义阈值触发）
 - 进程守护（当前如果没有服务端运行就自动重启）
